@@ -1,0 +1,43 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const collection = await getCollection("launches");
+  if (!collection) {
+    return [];
+  }
+  return collection.map((launch) => ({
+    params: {
+      id: launch.id,
+    },
+    props: {
+      launch,
+    },
+  }));
+};
+
+interface Props {
+  launch: CollectionEntry<"launches">;
+}
+
+const { launch } = Astro.props;
+---
+
+<Layout title={launch.data.name ?? "Launch"}>
+  <h1>{launch.data.name}</h1>
+  <p>{new Date(launch.data.window_start!).toLocaleDateString()}</p>
+  {
+    launch.data.image && (
+      <Image
+        src={launch.data.image}
+        alt={launch.data.name!}
+        width="800"
+        height="600"
+      />
+    )
+  }
+  <p>{launch.data.mission.description}</p>
+</Layout>

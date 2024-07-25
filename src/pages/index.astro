@@ -1,0 +1,46 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+
+const launches = await getCollection("launches");
+
+const spacecraft = await getCollection("spacecraft");
+
+const dogs = await getCollection("dogs");
+---
+
+<Layout title="Home">
+  <h1>Shuttles</h1>
+  <ul>
+    {
+      spacecraft.map((craft) => (
+        <li>
+          <a href={`/spacecraft/${craft.id}`}>{craft.data?.title}</a>
+        </li>
+      ))
+    }
+  </ul>
+  <h1>Launches</h1>
+
+  <ul>
+    {
+      launches.map((launch) => (
+        <li>
+          {new Date(launch.data?.window_start!).toDateString()}
+          <a href={`/launches/${launch.id}`}>{launch.data?.name}</a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <h1>Dogs</h1>
+  <ul>
+    {
+      dogs.map((dog) => (
+        <li>
+          <a href={`/dogs/${dog.id}`}>{dog.data?.breed}</a>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>

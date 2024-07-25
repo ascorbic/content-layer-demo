@@ -1,0 +1,49 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const collection = await getCollection("spacecraft");
+  if (!collection) return [];
+  return collection.map((craft) => ({
+    params: {
+      slug: craft.id,
+    },
+    props: {
+      craft,
+    },
+  }));
+};
+
+interface Props {
+  craft: CollectionEntry<"spacecraft">;
+}
+
+const { craft } = Astro.props;
+
+const { Content } = await craft.render();
+---
+
+<Layout title={craft.data.title}>
+  <h1>{craft.data.title}</h1>
+  {
+    craft.data.heroImage ? (
+      <Image
+        src={craft.data.heroImage}
+        alt={craft.data.title}
+        width="400"
+        height="300"
+      />
+    ) : undefined
+  }
+  <Content />
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+    }
+  </style>
+</Layout>
