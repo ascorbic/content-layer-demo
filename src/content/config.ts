@@ -3,12 +3,10 @@ import { file, glob } from "astro/loaders";
 import { spaceLoader } from "../loaders/space-loader.js";
 
 const launches = defineCollection({
-  type: "experimental_data",
   loader: spaceLoader(),
 });
 
 const dogs = defineCollection({
-  type: "experimental_data",
   loader: file("src/data/dogs.json"),
   schema: z.object({
     breed: z.string(),
@@ -21,7 +19,6 @@ const dogs = defineCollection({
 });
 
 const spacecraft = defineCollection({
-  type: "experimental_content",
   loader: glob({ pattern: "*.md", base: "./src/data/spacecraft" }),
   schema: ({ image }) =>
     z.object({
